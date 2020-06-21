@@ -35,68 +35,38 @@ with open(csvpath) as csvfile:
     #header of data set
     csv_header = next(csvReader)
 
-    #creating a list of poll data from reader
-    pollData = list(csvReader)
-    # print (pollData)
-
-    #creating lists of voter ids, countys and candidates from pollData list
-    voterID = list((int(rows[0]) for rows in pollData))
-    county = list((rows[1] for rows in pollData))
-    candidate = list((rows[2] for rows in pollData))
-
-    # print(voterID)
-    # print(county)
-    # print (candidate)
+    # creating a dictionary of poll data from reader
+    candidateVotes = {}
+    candidatePercent = {}
+    # decalre variables
+    votesTotal = 0
 
     # analysis calculations
-    # calculating total # of votes cast
-    votesTotal = len(voterID)
-    
-    # determining the unique list of candidates who got votes
-    
-    # mylist = ['nowplaying', 'PBS', 'PBS',
-    #           'nowplaying', 'job', 'debate', 'thenandnow']
-    # uniqueCandidate_set = set(candidate)
-    # print(uniqueCandidate_set)
+    # looping through candidate name row in csvReader file
+    for row in csvReader:
+        candidateName = row[2]
+        # calculating total # of votes
+        votesTotal += 1
+        # name.append()
+        # adding candidate name to dict and giving it a vote count
+        if candidateName not in candidateVotes:
+            # 2 dicts: for votes toals and another to calculate votes %
+            candidateVotes[candidateName] = 1
+            candidatePercent[candidateName] = 1
 
-    uniqueCandidate = []
-    for rows in candidate:
-        if rows not in uniqueCandidate:
-            uniqueCandidate.append(rows)
-    print(uniqueCandidate)
-    candidateNum = len(uniqueCandidate)
-    
-    #calculating the # of votes each candidate got
-    index = 0
-    voteCount = 0
-    candidateVotes = []
-    
-    for rows in candidate:
-        
-        #while index > (candidateNum):
+        # counting # votes for each candidate
+        else:
+            # 2 dicts: for votes toals and another to calculate votes %
+            candidateVotes[candidateName] += 1
+            candidatePercent[candidateName] += 1
 
-        if (uniqueCandidate[index] == rows):
-            voteCount += 1
-        index += 1
-    # reset vote count
-        candidateVotes.append(voteCount)
-        voteCount = 0
-            # if rows == uniqueCandidate[index]:
-            #     voteCount += 1
-            #     candidateVotes[index].append(voteCount)
-            #     index += 1
+    # calculating the percentages candidates received
+    for key in candidatePercent:
+        candidatePercent[key] = round((candidatePercent[key] / votesTotal) * 100,2)
 
-    print (f"votes: {candidateVotes}")
+    # calculating winner of election
+    winnerKey = max(candidateVotes, key=candidateVotes.get)
     
-
-    
-    # Counter(candidate).values()
-    # for name in candidateNum  
-    #     for range(0:)
-    #     if rows = 
-    # c= Counter(candidate)
-    # print(c)
-
     # printing analysis to terminal
     print("")
     print("-------------------------------------------------")
@@ -105,19 +75,23 @@ with open(csvpath) as csvfile:
     print(f"Total Votes: {votesTotal}")
     print("-------------------------------------------------")
     #printing candidate voter stats
-    for name in range(candidateNum):
-        print (name)
-        # print(f"Candidate: {uniqueCandidate[name]}, Vote %: , Votes: {candidateVotes[name]}")
+    for key in candidateVotes:
+        print(f"Candidate: {key} | Vote %: {candidatePercent[key]} % | Votes:{candidateVotes[key]}")
     print("-------------------------------------------------")
-    print("Winner: ")
+    print(f"Winner: {winnerKey}")
     print("-------------------------------------------------")
 
     #print analysis to text file
     with open("Poll_Report.txt", "w") as text_file:
-        print("-------------------------------------------------", file=text_file)
+        print("---------------------------------------------------", file=text_file)
         print("Election Results", file=text_file)
-        print("-------------------------------------------------", file=text_file)
+        print("---------------------------------------------------", file=text_file)
         print(f"Total Votes: {votesTotal}", file=text_file)
-        print("-------------------------------------------------", file=text_file)
-
+        print("---------------------------------------------------", file=text_file)
+        #printing candidate voter stats
+        for key in candidateVotes:
+            print(f"Candidate: {key} | Vote %: {candidatePercent[key]} % | Votes: {candidateVotes[key]}", file=text_file)
+        print("---------------------------------------------------", file=text_file)
+        print(f"Winner: {winnerKey}", file=text_file)
+        print("---------------------------------------------------", file=text_file)
         text_file.close()
