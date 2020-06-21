@@ -91,7 +91,7 @@ with open(csvpath) as csvfile:
     print (f"Greatest Increase in Profits: {increase_year} ${increase_maxProfit}")
     print (f"Greatest Decrease in Profits: {decrease_year} ${decrease_maxProfit}")
 
-    #print analysis to text file
+    # print analysis to text file
     with open("Bank_Report.txt", "w") as text_file:
         print("-------------------------------------------------",file=text_file)
         print("Financial Analysis", file=text_file)
