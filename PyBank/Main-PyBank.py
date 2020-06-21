@@ -32,15 +32,11 @@ with open(csvpath) as csvfile:
     
     #creating a list of budget data from reader
     budgetData = list(csvReader)
-    # print (budgetData)
 
     #creating lists of dates and profit/losses from budgetData list
     budgetDate = list((rows[0] for rows in budgetData))
     budgetPL = list((int(rows[1]) for rows in budgetData))
-    
-    # print(budgetDate)
-    # print(budgetPL)
-    
+       
     # analysis calculations
     # calculating total months in dataset
     monthsTotal = len(budgetData)
@@ -53,22 +49,19 @@ with open(csvpath) as csvfile:
     sumChange = []
     # looping through rows in profit/loss list
     for rows in range(1,len(budgetPL)):
-        # if rows <= len(budgetPL):
-            #storing moving changes in a new list called sumChange
-            # sumChange.append(budgetPL[rows]-budgetPL[rows-1])
         #storing moving changes in a new list called sumChange
         sumChange.append(budgetPL[rows]-budgetPL[rows-1])
     # calculating the average of changes: sum of changes/# of changes
     avgChange = sum(sumChange) / len(sumChange)
 
-    # calculating greatest increase and decrease in profits
+    # calculating greatest increase and decrease in profits + dates
     # variables
     increase_maxProfit = 0
     increase_year = ""
     decrease_maxProfit = 0
     decrease_year = ""
-    counterMax = 1
-    counterMin = 1
+    counterMax = 0
+    counterMin = 0
 
     # looping through list of profit/loss changes
     for row in sumChange:
@@ -78,16 +71,17 @@ with open(csvpath) as csvfile:
             increase_maxProfit = row
             # indexing year to increase
             increase_year = budgetDate[counterMax]
-        counterMax =+ 1
+        counterMax += 1
     
         # calculating the greatest decrease in profits
         if row < decrease_maxProfit:
             decrease_maxProfit = row
             # indexing year to decrease
             decrease_year = budgetDate[counterMin]
-        counterMin =+ 1
-            
+        counterMin += 1
+             
     # printing analysis to terminal
+    print ("")
     print ("-------------------------------------------------")
     print ("Financial Analysis")
     print ("-------------------------------------------------")
@@ -96,3 +90,15 @@ with open(csvpath) as csvfile:
     print (f"Average Change: ${round(avgChange,2)}")
     print (f"Greatest Increase in Profits: {increase_year} ${increase_maxProfit}")
     print (f"Greatest Decrease in Profits: {decrease_year} ${decrease_maxProfit}")
+
+    #print analysis to text file
+    with open("Bank_Report.txt", "w") as text_file:
+        print("-------------------------------------------------",file=text_file)
+        print("Financial Analysis", file=text_file)
+        print("-------------------------------------------------", file=text_file)
+        print(f"Total Months: {monthsTotal}", file=text_file)
+        print(f"Total: ${p_lTotal}", file=text_file)
+        print(f"Average Change: ${round(avgChange,2)}", file=text_file)
+        print(f"Greatest Increase in Profits: {increase_year} {increase_maxProfit}", file=text_file)
+        print(f"Greatest Decrease in Profits: {decrease_year} {decrease_maxProfit}", file=text_file)
+        text_file.close()
